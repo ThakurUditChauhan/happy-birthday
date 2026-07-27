@@ -1071,23 +1071,13 @@
   </div>
 
   
-  <audio id="ourSong"
-       src="romantic-music.mp3"
-       preload="auto"
-       loop
-       playsinline>
-</audio>
-
-<audio id="birthdaySong"
-       src="birthday-song.mp3"
-       preload="auto"
-       playsinline>
-</audio>
+  <audio id="romanticMusic" src="romantic-music.mp3" preload="auto" loop playsinline webkit-playsinline></audio>
+  <audio id="birthdaySong" src="birthday-song.mp3" preload="auto" playsinline webkit-playsinline></audio>
 
   <script>
     const CONFIG = {
       wifeName: "Riya",
-      subtitle: "Twenty-five years ago, the world received a beautiful soul. Years later, I received the greatest blessing of my life—you. Thank you for filling my days with laughter, my heart with peace, and my life with a love I never knew was possible. If I had to choose all over again, in every lifetime, I’d still choose you. Happy 25th Birthday, Riya. I love you endlessly. ❤️",
+      subtitle: "Twenty-five years ago, the world received a beautiful soul. Years later, I received the greatest blessing of my life—you. Thank you for filling my days with laughter, my heart with peace, and my life with a love I never knew was possible. If I had to choose all over again, in every lifetime, I'd still choose you. Happy 25th Birthday, Riya. I love you endlessly. ❤️",
       lines: [
         "Twenty-five looks absolutely perfect on you.",
         "This page exists just to make you smile.",
@@ -1105,7 +1095,8 @@
         "Forever looks like this",
         "The most beautiful reflection ❤️"
       ],
-      musicSrc: "romantic-music.mp3",
+      romanticMusicSrc: "romantic-music.mp3",
+      birthdaySongSrc: "birthday-song.mp3",
       wishText: "Happy 25th Birthday, Riya. You are the light in my ordinary days, the calm in my chaos, and the most beautiful reason my heart smiles so often. May this year bring you peace, magic, laughter, and a love that keeps growing — because you deserve nothing less than the very best.",
       finaleText: "No matter how many birthdays pass, you'll always be the most beautiful chapter of my life."
     };
@@ -1120,8 +1111,8 @@
     const candlesEl = document.getElementById('candles');
     const galleryEl = document.getElementById('gallery');
     const modalEl = document.getElementById('modal');
-    const ourSong = document.getElementById("ourSong");
-    const birthdaySong = document.getElementById("birthdaySong");
+    const romanticMusic = document.getElementById('romanticMusic');
+    const birthdaySong = document.getElementById('birthdaySong');
     const splash = document.getElementById('splash');
     const enterBtn = document.getElementById('enterBtn');
     const romanceBtn = document.getElementById('romanceBtn');
@@ -1134,7 +1125,8 @@
     modalTitleEl.textContent = CONFIG.modalTitle;
     modalTextEl.textContent = CONFIG.modalText;
     storyTextEl.textContent = CONFIG.storyText;
-    bgMusic.src = CONFIG.musicSrc;
+    romanticMusic.src = CONFIG.romanticMusicSrc;
+    birthdaySong.src = CONFIG.birthdaySongSrc;
 
     chipsEl.innerHTML = CONFIG.chips.map(x => `<span class="chip">${x}</span>`).join('');
 
@@ -1267,52 +1259,59 @@
       window.setTimeout(() => splash.style.display = 'none', 520);
     }
 
-    // function speakBirthdayWish() {
-    //   if (!('speechSynthesis' in window)) {
-    //     openModal();
-    //     return;
-    //   }
-    //   try { bgMusic.pause(); } catch (e) {}
-    //   setActiveTab(birthdayBtn);
-    //   window.speechSynthesis.cancel();
-    //   const utter = new SpeechSynthesisUtterance(CONFIG.wishText);
-    //   utter.lang = 'en-IN';
-    //   utter.rate = 0.95;
-    //   utter.pitch = 1.05;
-    //   utter.volume = 1;
-    //   utter.onend = () => {
-    //     birthdayBtn.classList.remove('active');
-    //   };
-    //   utter.onerror = () => {
-    //     birthdayBtn.classList.remove('active');
-    //     openModal();
-    //   };
-    //   window.speechSynthesis.speak(utter);
-    // }
+    async function speakBirthdayWish() {
+      try { romanticMusic.pause(); } catch (e) {}
+      setActiveTab(birthdayBtn);
+      
+      try {
+        if (birthdaySong.paused) {
+          await birthdaySong.play();
+        } else {
+          birthdaySong.pause();
+          birthdayBtn.classList.remove('active');
+          return;
+        }
+      } catch (err) {
+        if (!('speechSynthesis' in window)) {
+          openModal();
+          birthdayBtn.classList.remove('active');
+          return;
+        }
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(CONFIG.wishText);
+        utter.lang = 'en-IN';
+        utter.rate = 0.95;
+        utter.pitch = 1.05;
+        utter.volume = 1;
+        utter.onend = () => {
+          birthdayBtn.classList.remove('active');
+        };
+        utter.onerror = () => {
+          birthdayBtn.classList.remove('active');
+          openModal();
+        };
+        window.speechSynthesis.speak(utter);
+      }
+    }
 
-async function playRomance() {
-
-    birthdaySong.pause();
-    birthdaySong.currentTime = 0;
-
-    ourSong.currentTime = 0;
-
-    await ourSong.play();
-
-    setActiveTab(romanceBtn);
-}
-
-async function playBirthdaySong() {
-
-    ourSong.pause();
-    ourSong.currentTime = 0;
-
-    birthdaySong.currentTime = 0;
-
-    await birthdaySong.play();
-
-    setActiveTab(birthdayBtn);
-}
+    async function playRomance() {
+      window.speechSynthesis?.cancel?.();
+      try { birthdaySong.pause(); } catch (e) {}
+      birthdayBtn.classList.remove('active');
+      setActiveTab(romanceBtn);
+      try {
+        if (romanticMusic.paused) {
+          await romanticMusic.play();
+        } else {
+          romanticMusic.pause();
+          romanceBtn.classList.remove('active');
+          return;
+        }
+      } catch (err) {
+        romanceBtn.classList.remove('active');
+        return;
+      }
+    }
 
     enterBtn.addEventListener('click', closeSplash);
     splash.addEventListener('click', (e) => {
@@ -1330,9 +1329,8 @@ async function playBirthdaySong() {
       openModal();
     });
 
-romanceBtn.addEventListener("click", playRomance);
-
-birthdayBtn.addEventListener("click", playBirthdaySong);
+    romanceBtn.addEventListener('click', playRomance);
+    birthdayBtn.addEventListener('click', speakBirthdayWish);
 
     fireworksBtn.addEventListener('click', () => {
       launchCelebration();
@@ -1352,7 +1350,6 @@ birthdayBtn.addEventListener("click", playBirthdaySong);
 
     document.querySelectorAll('.fade-on-scroll').forEach(el => revealObserver.observe(el));
 
-    // Start with a gentle celebratory pulse after the splash.
     window.setTimeout(closeSplash, 2200);
   </script>
 </body>
