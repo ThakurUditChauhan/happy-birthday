@@ -514,6 +514,8 @@
       max-width:860px;
       margin-left:auto;
       margin-right:auto;
+      content-visibility:auto;
+      contain-intrinsic-size: 1200px;
     }
 
     .photo {
@@ -523,6 +525,7 @@
       background:rgba(255,255,255,.06);
       border:1px solid rgba(255,255,255,.12);
       min-height:340px;
+      aspect-ratio: 4 / 5;
       box-shadow:0 20px 42px rgba(0,0,0,.22);
       transform:translateZ(0);
       isolation:isolate;
@@ -537,16 +540,39 @@
       pointer-events:none;
     }
 
+    .photo::after {
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(90deg, transparent, rgba(255,255,255,.14), transparent);
+      transform:translateX(-100%);
+      animation: shimmer 1.6s infinite;
+      opacity:0;
+      pointer-events:none;
+      z-index:1;
+    }
+
+    .photo.loading::after {
+      opacity:1;
+    }
+
     .photo img {
       width:100%;
       height:100%;
       min-height:340px;
       object-fit:cover;
       display:block;
-      transition:transform .55s ease, filter .55s ease;
+      transition:transform .55s ease, filter .55s ease, opacity .35s ease;
       background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
+      opacity:0;
     }
+    .photo.loaded img { opacity:1; }
     .photo:hover img { transform:scale(1.025); }
+
+    @keyframes shimmer {
+      0% { transform:translateX(-100%); }
+      100% { transform:translateX(100%); }
+    }
 
     .cap {
       position:absolute;
@@ -797,7 +823,7 @@
       .hero { grid-template-columns:1fr; }
       .left { border-right:none; border-bottom:1px solid rgba(255,255,255,.08); }
       .gallery { grid-template-columns:1fr; }
-      .photo, .placeholder { min-height:240px; }
+      .photo, .placeholder { min-height:240px; aspect-ratio: 4 / 5; }
     }
 
     @media (max-width: 680px) {
@@ -1011,18 +1037,62 @@
     }).join('');
 
     const photos = [
-      'photo1.jpeg',
-      'photo2.jpeg',
-      'photo3.jpeg',
-      'photo4.jpeg'
+      { src: 'photo1.jpeg', caption: CONFIG.photoCaptions[0] || 'Memory 1' },
+      { src: 'photo2.jpeg', caption: CONFIG.photoCaptions[1] || 'Memory 2' },
+      { src: 'photo3.jpeg', caption: CONFIG.photoCaptions[2] || 'Memory 3' },
+      { src: 'photo4.jpeg', caption: CONFIG.photoCaptions[3] || 'Memory 4' }
     ];
 
-    galleryEl.innerHTML = photos.map((src, idx) => `
-      <div class="photo fade-on-scroll">
-        <img src="${src}" alt="Memory ${idx + 1}" loading="lazy" decoding="async" />
-        <div class="cap">${CONFIG.photoCaptions[idx] || `Memory ${idx + 1}`}</div>
-      </div>
+    galleryEl.innerHTML = photos.map((item, idx) => `
+      <article class="photo fade-on-scroll loading" data-src="${item.src}">
+        <img alt="Memory ${idx + 1}" loading="lazy" decoding="async" />
+        <div class="cap">${item.caption}</div>
+      </article>
     `).join('');
+
+    const photoCards = Array.from(document.querySelectorAll('.photo'));
+    const imageObserver = 'IntersectionObserver' in window
+      ? new IntersectionObserver((entries, obs) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              obs.unobserve(entry.target);
+              loadPhotoCard(entry.target);
+            }
+          }
+        }, { rootMargin: '220px 0px' })
+      : null;
+
+    function loadPhotoCard(card) {
+      if (!card || card.dataset.loaded === 'true') return;
+      const img = card.querySelector('img');
+      const src = card.dataset.src;
+      if (!img || !src) return;
+
+      const preload = new Image();
+      preload.decoding = 'async';
+      preload.loading = 'eager';
+      preload.onload = async () => {
+        img.src = src;
+        try { if (img.decode) await img.decode(); } catch (_) {}
+        card.classList.remove('loading');
+        card.classList.add('loaded');
+        card.dataset.loaded = 'true';
+      };
+      preload.onerror = () => {
+        card.classList.remove('loading');
+        card.classList.add('failed');
+        card.dataset.loaded = 'true';
+        img.removeAttribute('src');
+        img.alt = `Unable to load ${src}`;
+        card.insertAdjacentHTML('afterbegin', '<div class="placeholder" style="min-height:220px; border-radius:0; border:none; background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.04));"><div><div style="font-size:34px; margin-bottom:8px;">&#10084;</div><div style="font-weight:800; margin-bottom:6px; color:#fff;">Add ' + src + '</div><div style="line-height:1.7; max-width:30ch;">Keep this file in the same folder as index.html and upload the folder to GitHub Pages.</div></div></div>');
+      };
+      preload.src = src;
+    }
+
+    photoCards.forEach(card => {
+      if (imageObserver) imageObserver.observe(card);
+      else requestAnimationFrame(() => loadPhotoCard(card));
+    });
 
     function openModal() {
       modalEl.classList.add('open');
