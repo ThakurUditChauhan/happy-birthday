@@ -509,7 +509,7 @@
     .gallery {
       display:flex;
       flex-direction:column;
-      gap:16px;
+      gap:18px;
       margin-top:16px;
       max-width:860px;
       margin-left:auto;
@@ -518,40 +518,50 @@
 
     .photo {
       position:relative;
-      border-radius:24px;
       overflow:hidden;
+      border-radius:28px;
       background:rgba(255,255,255,.06);
       border:1px solid rgba(255,255,255,.12);
-      min-height:280px;
-      box-shadow:0 16px 32px rgba(0,0,0,.18);
+      min-height:340px;
+      box-shadow:0 20px 42px rgba(0,0,0,.22);
       transform:translateZ(0);
+      isolation:isolate;
+    }
+
+    .photo::before {
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(180deg, rgba(255,255,255,.05), transparent 28%, rgba(0,0,0,.18));
+      z-index:1;
+      pointer-events:none;
     }
 
     .photo img {
       width:100%;
       height:100%;
+      min-height:340px;
       object-fit:cover;
       display:block;
-      loading:lazy;
-      decoding:async;
-      transition:transform .45s ease, filter .45s ease;
+      transition:transform .55s ease, filter .55s ease;
       background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
     }
-    .photo:hover img { transform:scale(1.03); }
+    .photo:hover img { transform:scale(1.025); }
 
     .cap {
       position:absolute;
-      left:14px;
-      right:14px;
-      bottom:14px;
-      padding:10px 14px;
-      border-radius:16px;
-      background:linear-gradient(180deg, rgba(14,7,24,.20), rgba(14,7,24,.66));
+      left:18px;
+      right:18px;
+      bottom:18px;
+      padding:12px 15px;
+      border-radius:18px;
+      background:linear-gradient(180deg, rgba(14,7,24,.18), rgba(14,7,24,.74));
       border:1px solid rgba(255,255,255,.10);
       color:#fff;
-      font-size:13px;
-      line-height:1.35;
-      backdrop-filter:blur(10px);
+      font-size:14px;
+      line-height:1.45;
+      backdrop-filter:blur(12px);
+      z-index:2;
     }
 
     .placeholder {
@@ -748,7 +758,7 @@
           </div>
 
           <div class="galleryWrap" id="gallerySection">
-            <h2 class="sectionTitle reveal delay3">A gallery that fills itself</h2>
+            <h2 class="sectionTitle reveal delay3">Three moments, one love</h2>
             <div class="gallery" id="gallery"></div>
           </div>
         </section>
@@ -788,12 +798,9 @@
       chips: ["25 years of magic", "A golden milestone", "Made for her", "Forever favourite"],
       storyText: "Tonight is for the woman who makes ordinary days feel rare. Let this page unfold like a private little celebration of everything that makes her special.",
       photoCaptions: [
-        "The first memory",
-        "The happiest moment",
-        "A beautiful day",
-        "A laugh we will never forget",
-        "Just us",
-        "One more reason to smile"
+        "A day I always remember",
+        "A smile worth everything",
+        "The most beautiful frame"
       ],
       musicSrc: "romantic-music.mp3"
     };
@@ -847,63 +854,18 @@
       return `<div class="candle" style="left: calc(${left}% - 7px)"></div>`;
     }).join('');
 
-    function candidatePhotos() {
-      const files = [];
-      const exts = ['jpg', 'jpeg', 'png', 'webp'];
-      for (let i = 1; i <= 12; i++) {
-        for (const ext of exts) files.push(`photo${i}.${ext}`);
-      }
-      for (let i = 1; i <= 12; i++) {
-        for (const base of ['image', 'pic', 'memory']) {
-          for (const ext of exts) files.push(`${base}${i}.${ext}`);
-        }
-      }
-      return files;
-    }
+    const photos = [
+      'photo1.jpg',
+      'photo2.jpg',
+      'photo3.jpg'
+    ];
 
-    function loadPhoto(src) {
-      return new Promise((resolve) => {
-        const img = new Image();
-        img.decoding = 'async';
-        img.loading = 'lazy';
-        img.onload = () => resolve({ ok: true, src });
-        img.onerror = () => resolve({ ok: false, src });
-        img.src = src;
-      });
-    }
-
-    async function buildGallery() {
-      const found = [];
-      const candidates = candidatePhotos();
-      for (const src of candidates) {
-        const res = await loadPhoto(src);
-        if (res.ok) found.push(src);
-        if (found.length >= 6) break;
-      }
-
-      if (!found.length) {
-        galleryEl.innerHTML = `
-          <div class="placeholder">
-            <div>
-              <div style="font-size:40px; margin-bottom:8px;">&#10084;</div>
-              <div style="font-weight:800; margin-bottom:6px; color:#fff;">Add your photos here</div>
-              <div style="line-height:1.7; max-width:30ch;">
-                Put files named photo1.jpg, photo2.jpg, photo3.jpg in the same folder and upload the whole folder.
-              </div>
-            </div>
-          </div>
-        `;
-        return;
-      }
-
-      galleryEl.innerHTML = found.map((src, idx) => `
-        <div class="photo">
-          <img src="${src}" alt="Memory ${idx + 1}" />
-          <div class="cap">${CONFIG.photoCaptions[idx] || `Memory ${idx + 1}`}</div>
-        </div>
-      `).join('');
-    }
-    buildGallery();
+    galleryEl.innerHTML = photos.map((src, idx) => `
+      <div class="photo reveal delay${Math.min(idx + 2, 5)}">
+        <img src="${src}" alt="Memory ${idx + 1}" loading="lazy" decoding="async" />
+        <div class="cap">${CONFIG.photoCaptions[idx] || `Memory ${idx + 1}`}</div>
+      </div>
+    `).join('');
 
     function openModal() {
       modalEl.classList.add('open');
