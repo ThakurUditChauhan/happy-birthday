@@ -1071,7 +1071,18 @@
   </div>
 
   
-  <audio id="bgMusic" src="romantic-music.mp3" preload="auto" loop playsinline webkit-playsinline></audio>
+  <audio id="ourSong"
+       src="romantic-music.mp3"
+       preload="auto"
+       loop
+       playsinline>
+</audio>
+
+<audio id="birthdaySong"
+       src="birthday-song.mp3"
+       preload="auto"
+       playsinline>
+</audio>
 
   <script>
     const CONFIG = {
@@ -1109,7 +1120,8 @@
     const candlesEl = document.getElementById('candles');
     const galleryEl = document.getElementById('gallery');
     const modalEl = document.getElementById('modal');
-    const bgMusic = document.getElementById('bgMusic');
+    const ourSong = document.getElementById("ourSong");
+    const birthdaySong = document.getElementById("birthdaySong");
     const splash = document.getElementById('splash');
     const enterBtn = document.getElementById('enterBtn');
     const romanceBtn = document.getElementById('romanceBtn');
@@ -1255,46 +1267,52 @@
       window.setTimeout(() => splash.style.display = 'none', 520);
     }
 
-    function speakBirthdayWish() {
-      if (!('speechSynthesis' in window)) {
-        openModal();
-        return;
-      }
-      try { bgMusic.pause(); } catch (e) {}
-      setActiveTab(birthdayBtn);
-      window.speechSynthesis.cancel();
-      const utter = new SpeechSynthesisUtterance(CONFIG.wishText);
-      utter.lang = 'en-IN';
-      utter.rate = 0.95;
-      utter.pitch = 1.05;
-      utter.volume = 1;
-      utter.onend = () => {
-        birthdayBtn.classList.remove('active');
-      };
-      utter.onerror = () => {
-        birthdayBtn.classList.remove('active');
-        openModal();
-      };
-      window.speechSynthesis.speak(utter);
-    }
+    // function speakBirthdayWish() {
+    //   if (!('speechSynthesis' in window)) {
+    //     openModal();
+    //     return;
+    //   }
+    //   try { bgMusic.pause(); } catch (e) {}
+    //   setActiveTab(birthdayBtn);
+    //   window.speechSynthesis.cancel();
+    //   const utter = new SpeechSynthesisUtterance(CONFIG.wishText);
+    //   utter.lang = 'en-IN';
+    //   utter.rate = 0.95;
+    //   utter.pitch = 1.05;
+    //   utter.volume = 1;
+    //   utter.onend = () => {
+    //     birthdayBtn.classList.remove('active');
+    //   };
+    //   utter.onerror = () => {
+    //     birthdayBtn.classList.remove('active');
+    //     openModal();
+    //   };
+    //   window.speechSynthesis.speak(utter);
+    // }
 
-    async function playRomance() {
-      window.speechSynthesis?.cancel?.();
-      birthdayBtn.classList.remove('active');
-      setActiveTab(romanceBtn);
-      try {
-        if (bgMusic.paused) {
-          await bgMusic.play();
-        } else {
-          bgMusic.pause();
-          romanceBtn.classList.remove('active');
-          return;
-        }
-      } catch (err) {
-        romanceBtn.classList.remove('active');
-        return;
-      }
-    }
+async function playRomance() {
+
+    birthdaySong.pause();
+    birthdaySong.currentTime = 0;
+
+    ourSong.currentTime = 0;
+
+    await ourSong.play();
+
+    setActiveTab(romanceBtn);
+}
+
+async function playBirthdaySong() {
+
+    ourSong.pause();
+    ourSong.currentTime = 0;
+
+    birthdaySong.currentTime = 0;
+
+    await birthdaySong.play();
+
+    setActiveTab(birthdayBtn);
+}
 
     enterBtn.addEventListener('click', closeSplash);
     splash.addEventListener('click', (e) => {
@@ -1312,8 +1330,9 @@
       openModal();
     });
 
-    romanceBtn.addEventListener('click', playRomance);
-    birthdayBtn.addEventListener('click', speakBirthdayWish);
+romanceBtn.addEventListener("click", playRomance);
+
+birthdayBtn.addEventListener("click", playBirthdaySong);
 
     fireworksBtn.addEventListener('click', () => {
       launchCelebration();
