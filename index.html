@@ -665,6 +665,134 @@
     .delay5 { animation-delay:.40s; }
     @keyframes reveal { to { opacity:1; transform:translateY(0); } }
 
+
+    .tabs {
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    .tabbtn {
+      appearance:none;
+      border:none;
+      border-radius:999px;
+      padding:10px 16px;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12);
+      color:rgba(255,255,255,.9);
+      font-weight:800;
+      letter-spacing:.2px;
+      cursor:pointer;
+      backdrop-filter:blur(14px);
+      box-shadow:0 16px 40px rgba(0,0,0,.18);
+      transition:transform .18s ease, background .18s ease, color .18s ease;
+    }
+    .tabbtn:hover { transform:translateY(-1px); }
+    .tabbtn.active {
+      color:#26152f;
+      background:linear-gradient(135deg, #ffe5a7, #ffbe72 55%, #ff99cb);
+    }
+
+    .splash {
+      position:fixed;
+      inset:0;
+      z-index:20;
+      display:grid;
+      place-items:center;
+      padding:24px;
+      background:radial-gradient(circle at top, rgba(255,217,138,.18), transparent 30%), rgba(7, 4, 12, .82);
+      backdrop-filter:blur(12px);
+      transition:opacity .5s ease, transform .5s ease;
+    }
+    .splash.hide {
+      opacity:0;
+      transform:scale(1.02);
+      pointer-events:none;
+    }
+    .splash-card {
+      width:min(560px, 100%);
+      border-radius:32px;
+      padding:34px 28px;
+      text-align:center;
+      background:linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.08));
+      border:1px solid rgba(255,255,255,.14);
+      box-shadow:0 30px 90px rgba(0,0,0,.4);
+    }
+    .splash-kicker {
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      margin-bottom:10px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12);
+      letter-spacing:.16em;
+      text-transform:uppercase;
+      font-size:12px;
+      color:rgba(255,255,255,.84);
+    }
+    .splash h2 {
+      margin:0 0 10px;
+      font-size:clamp(30px, 5vw, 46px);
+      letter-spacing:-.03em;
+    }
+    .splash p {
+      margin:0 0 18px;
+      color:var(--muted);
+      line-height:1.8;
+      font-size:16px;
+    }
+
+    .fade-on-scroll {
+      opacity:0;
+      transform:translateY(24px) scale(.99);
+      transition:opacity .8s ease, transform .8s ease;
+    }
+    .fade-on-scroll.in-view {
+      opacity:1;
+      transform:translateY(0) scale(1);
+    }
+
+    .finale {
+      margin: 8px 0 10px;
+      padding: 22px 18px 20px;
+      border-radius: 26px;
+      background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
+      border:1px solid rgba(255,255,255,.12);
+      box-shadow:0 18px 40px rgba(0,0,0,.18);
+      text-align:left;
+    }
+    .finale-kicker {
+      margin-bottom:10px;
+      display:inline-flex;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12);
+      font-size:12px;
+      letter-spacing:.16em;
+      text-transform:uppercase;
+      color:rgba(255,255,255,.82);
+    }
+    .finale-title {
+      margin:0;
+      font-size:clamp(26px, 4.5vw, 40px);
+      line-height:1.12;
+      letter-spacing:-.03em;
+    }
+    .finale-text {
+      margin:14px 0 0;
+      color:var(--muted);
+      line-height:1.85;
+      font-size:16px;
+      max-width:64ch;
+    }
+    .finale-actions {
+      margin-top:16px;
+    }
+
     @media (max-width: 980px) {
       .hero { grid-template-columns:1fr; }
       .left { border-right:none; border-bottom:1px solid rgba(255,255,255,.08); }
@@ -692,10 +820,22 @@
 <body>
   <div class="floaters" id="floaters" aria-hidden="true"></div>
 
+  <div class="splash" id="splash" aria-hidden="false">
+    <div class="splash-card">
+      <div class="splash-kicker">For Riya</div>
+      <h2>Happy 25th Birthday</h2>
+      <p>A cinematic little world made just for you.</p>
+      <button class="btn" id="enterBtn" type="button">Begin the celebration</button>
+    </div>
+  </div>
+
   <div class="wrap">
     <div class="topbar">
       <div class="badge">25th birthday edition</div>
-      <a href="#gallerySection" class="pill" id="musicBtn">Play romantic music</a>
+      <div class="tabs" role="tablist" aria-label="Celebration tabs">
+        <button class="tabbtn" id="birthdayBtn" type="button">🎂 Birthday Song</button>
+        <button class="tabbtn active" id="romanceBtn" type="button">❤️ Our Song</button>
+      </div>
     </div>
 
     <main class="card">
@@ -758,9 +898,18 @@
           </div>
 
           <div class="galleryWrap" id="gallerySection">
-            <h2 class="sectionTitle reveal delay3">Three moments, one love</h2>
+            <h2 class="sectionTitle reveal delay3">Four moments, one love</h2>
             <div class="gallery" id="gallery"></div>
           </div>
+
+          <section class="finale fade-on-scroll" id="finaleSection">
+            <div class="finale-kicker">The final note</div>
+            <h2 class="finale-title">No matter how many birthdays pass, you'll always be the most beautiful chapter of my life.</h2>
+            <p class="finale-text">Happy 25th Birthday, Riya. I hope this page feels like a gentle embrace — full of love, music, memories, and the kind of happiness that stays with you long after the lights go down.</p>
+            <div class="finale-actions">
+              <button class="btn" id="fireworksBtn" type="button">Watch the finale</button>
+            </div>
+          </section>
         </section>
       </div>
     </main>
@@ -778,12 +927,10 @@
     </div>
   </div>
 
+  
   <audio id="bgMusic" src="romantic-music.mp3" preload="auto" loop playsinline webkit-playsinline></audio>
 
   <script>
-    /* =========================
-       EDIT HERE (personalisation)
-       ========================= */
     const CONFIG = {
       wifeName: "Riya",
       subtitle: "Twenty-five years ago, the world received a beautiful soul. Years later, I received the greatest blessing of my life—you. Thank you for filling my days with laughter, my heart with peace, and my life with a love I never knew was possible. If I had to choose all over again, in every lifetime, I’d still choose you. Happy 25th Birthday, Riya. I love you endlessly. ❤️",
@@ -800,9 +947,12 @@
       photoCaptions: [
         "A day I always remember",
         "A smile worth everything",
-        "The most beautiful frame"
+        "The most beautiful frame",
+        "Forever looks like this"
       ],
-      musicSrc: "romantic-music.mp3"
+      musicSrc: "romantic-music.mp3",
+      wishText: "Happy 25th Birthday, Riya. You are the light in my ordinary days, the calm in my chaos, and the most beautiful reason my heart smiles so often. May this year bring you peace, magic, laughter, and a love that keeps growing — because you deserve nothing less than the very best.",
+      finaleText: "No matter how many birthdays pass, you'll always be the most beautiful chapter of my life."
     };
 
     const wifeNameEl = document.getElementById('wifeName');
@@ -816,6 +966,12 @@
     const galleryEl = document.getElementById('gallery');
     const modalEl = document.getElementById('modal');
     const bgMusic = document.getElementById('bgMusic');
+    const splash = document.getElementById('splash');
+    const enterBtn = document.getElementById('enterBtn');
+    const romanceBtn = document.getElementById('romanceBtn');
+    const birthdayBtn = document.getElementById('birthdayBtn');
+    const fireworksBtn = document.getElementById('fireworksBtn');
+    const finaleSection = document.getElementById('finaleSection');
 
     wifeNameEl.textContent = CONFIG.wifeName;
     subtitleEl.textContent = CONFIG.subtitle;
@@ -857,11 +1013,12 @@
     const photos = [
       'photo1.jpg',
       'photo2.jpg',
-      'photo3.jpg'
+      'photo3.jpg',
+      'photo4.jpg'
     ];
 
     galleryEl.innerHTML = photos.map((src, idx) => `
-      <div class="photo reveal delay${Math.min(idx + 2, 5)}">
+      <div class="photo fade-on-scroll">
         <img src="${src}" alt="Memory ${idx + 1}" loading="lazy" decoding="async" />
         <div class="cap">${CONFIG.photoCaptions[idx] || `Memory ${idx + 1}`}</div>
       </div>
@@ -881,17 +1038,15 @@
       cake.classList.add('blow');
     }
 
-    document.getElementById('openNoteBtn').addEventListener('click', openModal);
-    document.getElementById('closeModal').addEventListener('click', closeModal);
-    modalEl.addEventListener('click', (e) => { if (e.target === modalEl) closeModal(); });
-    document.querySelector('.cake-wrap').addEventListener('click', blowCandles);
-    setTimeout(blowCandles, 1700);
+    function setActiveTab(activeBtn) {
+      [romanceBtn, birthdayBtn].forEach(btn => btn.classList.remove('active'));
+      activeBtn.classList.add('active');
+    }
 
-    document.getElementById('confettiBtn').addEventListener('click', () => {
-      document.body.classList.add('celebrate');
+    function launchCelebration() {
       const floaters = document.getElementById('floaters');
       const icons = ['&hearts;', '&#10022;', '&#10024;', '&#10087;'];
-      for (let i = 0; i < 18; i++) {
+      for (let i = 0; i < 24; i++) {
         const el = document.createElement('div');
         el.className = 'floater';
         el.style.left = Math.random() * 100 + 'vw';
@@ -902,28 +1057,95 @@
         floaters.appendChild(el);
         setTimeout(() => el.remove(), 16000);
       }
-    });
+    }
 
-    let musicOn = false;
-    const musicBtn = document.getElementById('musicBtn');
-    musicBtn.addEventListener('click', async (e) => {
-      e.preventDefault();
+    function closeSplash() {
+      if (!splash || splash.classList.contains('hide')) return;
+      splash.classList.add('hide');
+      splash.setAttribute('aria-hidden', 'true');
+      window.setTimeout(() => splash.style.display = 'none', 520);
+    }
+
+    function speakBirthdayWish() {
+      if (!('speechSynthesis' in window)) {
+        openModal();
+        return;
+      }
+      try { bgMusic.pause(); } catch (e) {}
+      setActiveTab(birthdayBtn);
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(CONFIG.wishText);
+      utter.lang = 'en-IN';
+      utter.rate = 0.95;
+      utter.pitch = 1.05;
+      utter.volume = 1;
+      utter.onend = () => {
+        birthdayBtn.classList.remove('active');
+      };
+      utter.onerror = () => {
+        birthdayBtn.classList.remove('active');
+        openModal();
+      };
+      window.speechSynthesis.speak(utter);
+    }
+
+    async function playRomance() {
+      window.speechSynthesis?.cancel?.();
+      birthdayBtn.classList.remove('active');
+      setActiveTab(romanceBtn);
       try {
-        if (!musicOn) {
+        if (bgMusic.paused) {
           await bgMusic.play();
-          musicOn = true;
-          musicBtn.textContent = 'Music on';
         } else {
           bgMusic.pause();
-          musicOn = false;
-          musicBtn.textContent = 'Play romantic music';
+          romanceBtn.classList.remove('active');
+          return;
         }
       } catch (err) {
-        musicBtn.textContent = 'Add romantic-music.mp3';
+        romanceBtn.classList.remove('active');
+        return;
       }
+    }
+
+    enterBtn.addEventListener('click', closeSplash);
+    splash.addEventListener('click', (e) => {
+      if (e.target === splash) closeSplash();
     });
 
-    // Gentle mobile hint: the music starts only after a tap because iPhone browsers block autoplay.
+    document.getElementById('openNoteBtn').addEventListener('click', openModal);
+    document.getElementById('closeModal').addEventListener('click', closeModal);
+    modalEl.addEventListener('click', (e) => { if (e.target === modalEl) closeModal(); });
+    document.querySelector('.cake-wrap').addEventListener('click', blowCandles);
+    setTimeout(blowCandles, 1700);
+
+    document.getElementById('confettiBtn').addEventListener('click', () => {
+      launchCelebration();
+      openModal();
+    });
+
+    romanceBtn.addEventListener('click', playRomance);
+    birthdayBtn.addEventListener('click', speakBirthdayWish);
+
+    fireworksBtn.addEventListener('click', () => {
+      launchCelebration();
+      openModal();
+    });
+
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          if (entry.target === finaleSection) {
+            launchCelebration();
+          }
+        }
+      });
+    }, { threshold: 0.24 });
+
+    document.querySelectorAll('.fade-on-scroll').forEach(el => revealObserver.observe(el));
+
+    // Start with a gentle celebratory pulse after the splash.
+    window.setTimeout(closeSplash, 2200);
   </script>
 </body>
 </html>
