@@ -465,9 +465,28 @@
       box-shadow:0 0 16px rgba(255,217,138,.45);
       animation:flicker 1.4s ease-in-out infinite;
     }
+    .cake.blow .candle::before {
+      animation:blowOut .9s ease forwards;
+    }
+    .cake.blow .candle {
+      animation:wobble .9s ease forwards;
+    }
     @keyframes flicker {
       0%,100% { transform:translateX(-50%) rotate(-45deg) scale(1); opacity:.9; }
       50% { transform:translateX(-50%) rotate(-40deg) scale(1.06); opacity:1; }
+    }
+    @keyframes wobble {
+      0% { transform:translateY(0) rotate(0deg); }
+      25% { transform:translateY(-1px) rotate(-1deg); }
+      50% { transform:translateY(0) rotate(1deg); }
+      75% { transform:translateY(-1px) rotate(-1deg); }
+      100% { transform:translateY(0) rotate(0deg); }
+    }
+    @keyframes blowOut {
+      0% { opacity:1; transform:translateX(-50%) rotate(-45deg) scale(1); filter:blur(0); }
+      35% { opacity:.85; transform:translateX(calc(-50% + 3px)) rotate(-65deg) scale(.9); }
+      70% { opacity:.25; transform:translateX(calc(-50% + 10px)) rotate(-80deg) scale(.45); filter:blur(1px); }
+      100% { opacity:0; transform:translateX(calc(-50% + 14px)) rotate(-90deg) scale(0); filter:blur(2px); }
     }
 
     .galleryWrap {
@@ -488,19 +507,22 @@
     }
 
     .gallery {
-      display:grid;
-      grid-template-columns:repeat(3, minmax(0, 1fr));
-      gap:12px;
+      display:flex;
+      flex-direction:column;
+      gap:16px;
       margin-top:16px;
+      max-width:860px;
+      margin-left:auto;
+      margin-right:auto;
     }
 
     .photo {
       position:relative;
-      border-radius:22px;
+      border-radius:24px;
       overflow:hidden;
       background:rgba(255,255,255,.06);
       border:1px solid rgba(255,255,255,.12);
-      min-height:220px;
+      min-height:280px;
       box-shadow:0 16px 32px rgba(0,0,0,.18);
       transform:translateZ(0);
     }
@@ -519,12 +541,12 @@
 
     .cap {
       position:absolute;
-      left:12px;
-      right:12px;
-      bottom:12px;
-      padding:10px 12px;
+      left:14px;
+      right:14px;
+      bottom:14px;
+      padding:10px 14px;
       border-radius:16px;
-      background:linear-gradient(180deg, rgba(14,7,24,.24), rgba(14,7,24,.66));
+      background:linear-gradient(180deg, rgba(14,7,24,.20), rgba(14,7,24,.66));
       border:1px solid rgba(255,255,255,.10);
       color:#fff;
       font-size:13px;
@@ -697,10 +719,6 @@
             </p>
           </div>
 
-          <div class="footer">
-            Edit points are kept simple on purpose: name, message, music file, and photos.
-            Put your images in the same folder and name them photo1.jpg, photo2.jpg, photo3.jpg, and so on. The page will auto-load whichever ones exist.
-          </div>
         </section>
 
         <section class="panel right">
@@ -731,10 +749,6 @@
 
           <div class="galleryWrap" id="gallerySection">
             <h2 class="sectionTitle reveal delay3">A gallery that fills itself</h2>
-            <p class="sectionText reveal delay4">
-              Drop photos into the same folder using the names photo1.jpg, photo2.jpg, photo3.jpg, and more if you want. The page will scan for them automatically and build the gallery on its own.
-            </p>
-
             <div class="gallery" id="gallery"></div>
           </div>
         </section>
@@ -762,7 +776,7 @@
        ========================= */
     const CONFIG = {
       wifeName: "Riya",
-      subtitle: "A warm, elegant 25th birthday experience with cinematic lighting, soft romance, and a premium feel made to impress from the first second.",
+      subtitle: "Twenty-five years ago, the world received a beautiful soul. Years later, I received the greatest blessing of my life—you. Thank you for filling my days with laughter, my heart with peace, and my life with a love I never knew was possible. If I had to choose all over again, in every lifetime, I’d still choose you. Happy 25th Birthday, Riya. I love you endlessly. ❤️",
       lines: [
         "Twenty-five looks absolutely perfect on you.",
         "This page exists just to make you smile.",
@@ -835,10 +849,12 @@
 
     function candidatePhotos() {
       const files = [];
-      const bases = ['photo', 'image', 'pic', 'memory'];
       const exts = ['jpg', 'jpeg', 'png', 'webp'];
       for (let i = 1; i <= 12; i++) {
-        for (const base of bases) {
+        for (const ext of exts) files.push(`photo${i}.${ext}`);
+      }
+      for (let i = 1; i <= 12; i++) {
+        for (const base of ['image', 'pic', 'memory']) {
           for (const ext of exts) files.push(`${base}${i}.${ext}`);
         }
       }
@@ -897,10 +913,17 @@
       modalEl.classList.remove('open');
       modalEl.setAttribute('aria-hidden', 'true');
     }
+    function blowCandles() {
+      const cake = document.querySelector('.cake');
+      if (!cake || cake.classList.contains('blow')) return;
+      cake.classList.add('blow');
+    }
 
     document.getElementById('openNoteBtn').addEventListener('click', openModal);
     document.getElementById('closeModal').addEventListener('click', closeModal);
     modalEl.addEventListener('click', (e) => { if (e.target === modalEl) closeModal(); });
+    document.querySelector('.cake-wrap').addEventListener('click', blowCandles);
+    setTimeout(blowCandles, 1700);
 
     document.getElementById('confettiBtn').addEventListener('click', () => {
       document.body.classList.add('celebrate');
