@@ -803,25 +803,39 @@
     }
     .modal.open { opacity:1; pointer-events:auto; }
     .modal-card {
-      width:min(560px, 100%);
-      border-radius:28px;
-      background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.08));
-      border:1px solid rgba(255,255,255,.14);
-      box-shadow:var(--shadow);
-      padding:28px;
-      text-align:center;
-    }
+    width: min(560px, 92%);
+    max-height: 85vh;
+    overflow-y: auto;
+    border-radius: 30px;
+    background: linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.08));
+    border: 1px solid rgba(255,255,255,.15);
+    box-shadow: var(--shadow);
+    padding: 26px;
+    text-align: center;
+}
     .modal-card h3 {
-      margin:10px 0 10px;
-      font-size:clamp(24px, 4vw, 34px);
-      letter-spacing:-.03em;
-    }
+    margin: 10px 0 18px;
+    font-size: clamp(28px, 5vw, 38px);
+    letter-spacing: -.02em;
+    color: #ffe6b3;
+    font-weight: 700;
+}
     .modal-card p {
-      margin:0;
-      color:var(--muted);
-      line-height:1.8;
-      font-size:16px;
-    }
+    margin: 0;
+    font-size: 17px;
+    line-height: 1.9;
+    color: rgba(255,255,255,.92);
+    font-style: italic;
+    font-family: "Georgia", "Times New Roman", serif;
+}
+.romantic-signature {
+    display: block;
+    margin-top: 20px;
+    font-size: 18px;
+    color: #ffd98a;
+    font-style: normal;
+    line-height: 1.8;
+}
     .modal .btn { margin-top:18px; }
     .hint { margin-top:10px; color:rgba(255,255,255,.60); font-size:12px; }
 
@@ -1615,18 +1629,14 @@
 
   openModal(
     "One Last Thing... ❤️",
-    `Before this page ends, I want you to know something...<br><br>
-
-    Thank you for every smile, every laugh and every little moment that became my favourite memory because you were in it.<br><br>
-
-    I don't just love you for who you are—I love the person I become when I'm with you.<br><br>
-
-    Happy 25th Birthday, my beautiful future wife. I pray this year brings you endless happiness, good health, success, and everything your heart dreams of.<br><br>
-
-    And no matter how many birthdays we celebrate together, I promise I'll always keep finding new ways to make you smile.<br><br>
-
-    <strong>We love you today, tomorrow, and forever !!</strong>
-    <strong>With Lots of love from Chauhan family ❤️</strong>`
+    `My dearest Riya,<br><br>
+    Thank you for filling my life with love, laughter, and memories I'll cherish forever.<br><br>
+    Happy 25th Birthday, my beautiful future wife. May this year bring you endless happiness, good health, and every dream your heart holds.<br><br>
+    I promise to keep finding new reasons to make you smile, today and always.<br><br>
+    <span class="romantic-signature">
+      Forever yours ❤️<br>
+      <strong>With lots of love,<br>The Chauhan Family</strong>
+    </span>`
   );
 });
 
