@@ -1135,8 +1135,8 @@
   <div class="splash" id="splash" aria-hidden="false">
     <div class="splash-card">
       <div class="splash-kicker">For Riya</div>
-      <h2>Happy 25th Birthday</h2>
-      <p>A cinematic little world made just for you.</p>
+      <h2>Happy 25th Birthday !!</h2>
+      <p>An unforgettable experience awaits you 😉</p>
       <button class="btn" id="enterBtn" type="button">Begin the celebration</button>
     </div>
   </div>
@@ -1146,15 +1146,15 @@
       <div class="badge">25th birthday edition</div>
       <div class="tabs" role="tablist" aria-label="Celebration tabs">
         <button class="tabbtn" id="birthdayBtn" type="button">🎂 Birthday Song</button>
-        <button class="tabbtn active" id="romanceBtn" type="button">❤️ Our Song</button>
+        <button class="tabbtn active" id="romanceBtn" type="button">❤️ A Song for You ❤️ </button>
       </div>
     </div>
 
     <main class="card">
       <div class="hero">
         <section class="panel left">
-          <div class="eyebrow reveal delay1">A celebration made only for her</div>
-          <h1 class="reveal delay2"><span class="age">25</span> reasons to adore <span class="name" id="wifeName">Riya</span></h1>
+          <div class="eyebrow reveal delay1">A celebration made only for you</div>
+          <h1 class="reveal delay2"><span class="age">25</span>reasons My Heart Chose You <span class="name" id="wifeName">Riya</span></h1>
           <p class="subtitle reveal delay3" id="subtitle">
             A warm, elegant 25th birthday experience with cinematic lighting, soft romance, and a premium feel made to impress from the first second.
           </p>
@@ -1207,7 +1207,7 @@
           </div>
 
           <div class="galleryWrap" id="gallerySection">
-            <h2 class="sectionTitle reveal delay3">Five moments, one love</h2>
+            <p class="sectionTitle reveal delay3">A Journey Through Our Memories</p>
             <div class="gallery" id="gallery"></div>
           </div>
 
@@ -1279,11 +1279,12 @@
       chips: ["25 years of magic", "A golden milestone", "Made for her", "Forever favourite"],
       storyText: "Tonight is for the woman who makes ordinary days feel rare. Let this page unfold like a private little celebration of everything that makes her special.",
       photoCaptions: [
-        "A day I always remember",
-        "A smile worth everything",
-        "The most beautiful frame",
-        "Forever looks like this",
-        "The most beautiful reflection ❤️"
+        "A smile worth everything !!",
+        "Mirror, mirror... it never stood a chance 😉❤️ !!",
+        "A picture of confidence, beauty, and endless grace !!",
+        "A day I always remember !!",
+        "The most beautiful frame !!",
+        "Forever looks like this !!"
       ],
       romanticMusicSrc: "romantic-music.mp3",
       birthdaySongSrc: "birthday-song.mp3",
@@ -1401,9 +1402,10 @@
     const photos = [
       { src: 'photo1.jpeg', caption: CONFIG.photoCaptions[0] || 'Memory 1' },
       { src: 'photo2.jpeg', caption: CONFIG.photoCaptions[1] || 'Memory 2' },
-      { src: 'photo5.jpeg', caption: CONFIG.photoCaptions[4] || 'Memory 3' },
-      { src: 'photo3.jpeg', caption: CONFIG.photoCaptions[2] || 'Memory 4' },
-      { src: 'photo4.jpeg', caption: CONFIG.photoCaptions[3] || 'Memory 5' }
+      { src: 'photo3.jpeg', caption: CONFIG.photoCaptions[2] || 'Memory 3' },
+      { src: 'photo4.jpeg', caption: CONFIG.photoCaptions[3] || 'Memory 4' },
+      { src: 'photo5.jpeg', caption: CONFIG.photoCaptions[4] || 'Memory 5' },
+      { src: 'photo6.jpeg', caption: CONFIG.photoCaptions[5] || 'Memory 6' }
     ];
 
     galleryEl.innerHTML = photos.map((item, idx) => `
@@ -1457,10 +1459,13 @@
       else requestAnimationFrame(() => loadPhotoCard(card));
     });
 
-    function openModal() {
-      modalEl.classList.add('open');
-      modalEl.setAttribute('aria-hidden', 'false');
-    }
+    function openModal(title, message) {
+  modalTitleEl.textContent = title;
+  modalTextEl.innerHTML = message;
+
+  modalEl.classList.add('open');
+  modalEl.setAttribute('aria-hidden', 'false');
+}
     function closeModal() {
       modalEl.classList.remove('open');
       modalEl.setAttribute('aria-hidden', 'true');
@@ -1575,11 +1580,18 @@
     }
 
     enterBtn.addEventListener('click', closeSplash);
-    splash.addEventListener('click', (e) => {
-      if (e.target === splash) closeSplash();
-    });
+    // splash.addEventListener('click', (e) => {
+    //   if (e.target === splash) closeSplash();
+    // });
 
-    document.getElementById('openNoteBtn').addEventListener('click', openModal);
+    document.getElementById('openNoteBtn').addEventListener('click', () => {
+  openModal(
+    "To Riya, with all my heart ❤️",
+    `Happy 25th Birthday, Riya.<br><br>
+    You are my calm place, my favourite smile, and the most beautiful part of so many days.
+    I hope this little world feels as special as you are to me. God bless you!!`
+  );
+});
     document.getElementById('closeModal').addEventListener('click', closeModal);
     modalEl.addEventListener('click', (e) => { if (e.target === modalEl) closeModal(); });
     setTimeout(() => {
@@ -1597,9 +1609,24 @@
     birthdayBtn.addEventListener('click', speakBirthdayWish);
 
     fireworksBtn.addEventListener('click', () => {
-      launchCelebration();
-      openModal();
-    });
+  launchCelebration();
+
+  openModal(
+    "One Last Thing... ❤️",
+    `Before this page ends, I want you to know something...<br><br>
+
+    Thank you for every smile, every laugh and every little moment that became my favourite memory because you were in it.<br><br>
+
+    I don't just love you for who you are—I love the person I become when I'm with you.<br><br>
+
+    Happy 25th Birthday, my beautiful future wife. I pray this year brings you endless happiness, good health, success, and everything your heart dreams of.<br><br>
+
+    And no matter how many birthdays we celebrate together, I promise I'll always keep finding new ways to make you smile.<br><br>
+
+    <strong>We love you today, tomorrow, and forever !!</strong>
+    <strong>With Lots of love from Chauhan family ❤️</strong>`
+  );
+});
 
     const revealObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -1614,7 +1641,7 @@
 
     document.querySelectorAll('.fade-on-scroll').forEach(el => revealObserver.observe(el));
 
-    window.setTimeout(closeSplash, 2200);
+    //window.setTimeout(closeSplash, 2200);
   </script>
 </body>
 </html>
